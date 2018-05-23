@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,11 +13,11 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/btnRemoveNote"
+            android:id="@+id/btnAnnouncements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:text="Remove"/>
+            android:text="Announcements"/>
 
 
         <View
@@ -26,11 +26,11 @@
             android:visibility="invisible" />
 
         <Button
-            android:id="@+id/btnNo"
+            android:id="@+id/btnCourseWork"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:text="Cancel" />
+            android:text="Course Works" />
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

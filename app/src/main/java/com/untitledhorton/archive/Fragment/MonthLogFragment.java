@@ -9,26 +9,27 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.melnykov.fab.FloatingActionButton;
+import com.google.api.client.util.DateTime;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnClickListener;
 import com.orhanobut.dialogplus.ViewHolder;
-import com.untitledhorton.archive.AddActivity;
 import com.untitledhorton.archive.EditActivity;
 import com.untitledhorton.archive.Model.Note;
 import com.untitledhorton.archive.NoteDetailActivity;
@@ -36,53 +37,112 @@ import com.untitledhorton.archive.R;
 import com.untitledhorton.archive.Utility.CustomNoteAdapter;
 import com.untitledhorton.archive.Utility.FirebaseCommand;
 import com.untitledhorton.archive.Utility.FirebaseOperation;
+
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 
 /**
- * Created by Greg on 09/03/2018.
+ * Created by Greg on 10/03/2018.
  */
 
-public class NotesFragment extends Fragment implements ScreenShotable, FirebaseCommand, View.OnClickListener{
+public class MonthLogFragment extends Fragment implements ScreenShotable, FirebaseCommand{
 
     private View Fragmentone_view;
     private Bitmap bitmap;
 
-    private FloatingActionButton fab;
     private ArrayList<Note> notes;
+    private TextView tvEmpty;
+    private Spinner spinner;
     private SwipeMenuListView lvNotes;
     private CustomNoteAdapter noteAdapter;
     private ProgressBar pb;
     private EditText etNote;
-    private String note, day, month, year;
-    private TextView tvEmpty;
+    private String note, day, month, year, selectedMonth;
 
-    public static NotesFragment newInstance() {
-        NotesFragment notesFrag = new NotesFragment();
-        return notesFrag;
+    public static MonthLogFragment newInstance() {
+        MonthLogFragment monthLogFragment = new MonthLogFragment();
+        return monthLogFragment;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_monthlog, container, false);
 
         lvNotes = rootView.findViewById(R.id.lvReminders);
         pb = rootView.findViewById(R.id.pb);
-        fab = rootView.findViewById(R.id.fab);
-        tvEmpty = rootView.findViewById(R.id.tvEmpty);
         notes = new ArrayList<Note>();
-        fab.attachToListView(lvNotes);
-
         noteAdapter = new CustomNoteAdapter(getActivity(), notes);
+        tvEmpty = rootView.findViewById(R.id.tvEmpty);
+        spinner = rootView.findViewById(R.id.spinner);
         lvNotes.setEmptyView(tvEmpty);
 
-        FirebaseOperation.retrieveNotes(pb, notes, noteAdapter, tvEmpty);
-
         lvNotes.setAdapter(noteAdapter);
-
-        fab.setOnClickListener(this);
         swipeMenuCreator(lvNotes);
+
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.months));
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(monthAdapter);
+
+        Calendar cal = Calendar.getInstance();
+
+        selectedMonth = new DateFormatSymbols().getMonths()[cal.get(Calendar.MONTH)];
+        int spinnerPosition = monthAdapter.getPosition(selectedMonth);
+        spinner.setSelection(spinnerPosition);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println("month selected: " + adapterView.getSelectedItem().toString());
+                switch(adapterView.getSelectedItem().toString()){
+                    case "January":
+                        selectedMonth = "01";
+                        break;
+                    case "February":
+                        selectedMonth = "02";
+                        break;
+                    case "March":
+                        selectedMonth = "03";
+                        break;
+                    case "April":
+                        selectedMonth = "04";
+                        break;
+                    case "May":
+                        selectedMonth = "05";
+                        break;
+                    case "June":
+                        selectedMonth = "06";
+                        break;
+                    case "July":
+                        selectedMonth = "07";
+                        break;
+                    case "August":
+                        selectedMonth = "08";
+                        break;
+                    case "September":
+                        selectedMonth = "09";
+                        break;
+                    case "October":
+                        selectedMonth = "10";
+                        break;
+                    case "November":
+                        selectedMonth = "11";
+                        break;
+                    case "December":
+                        selectedMonth = "12";
+                        break;
+                }
+                FirebaseOperation.retrieveMonth(pb, notes, noteAdapter, tvEmpty, selectedMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         lvNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -166,7 +226,7 @@ public class NotesFragment extends Fragment implements ScreenShotable, FirebaseC
                                 }
                                 FirebaseOperation.moveNote(moveKey, day, month, year);
                             }
-                            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
                         datePickerDialog.show();
 
                         break;
@@ -224,7 +284,7 @@ public class NotesFragment extends Fragment implements ScreenShotable, FirebaseC
                         Fragmentone_view.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 Fragmentone_view.draw(canvas);
-                NotesFragment.this.bitmap = bitmap;
+                MonthLogFragment.this.bitmap = bitmap;
             }
         };
 
@@ -246,17 +306,6 @@ public class NotesFragment extends Fragment implements ScreenShotable, FirebaseC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.fab:
-                Intent intent = new Intent(getActivity(), AddActivity.class);
-                getActivity().startActivity(intent);
-                break;
-        }
     }
 
 }

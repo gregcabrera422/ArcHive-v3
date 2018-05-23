@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/toolbar_color">
-
+    android:background="@color/toolbar_color"
+    tools:layout_editor_absoluteY="25dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,20 +14,26 @@
 
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_delete_black_32dp"/>
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_exit_to_app_black_24dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Are you sure you want to remove?"
+            android:text="Are You Sure You Want To Log Out?"
             android:textColor="@color/white_text"
             android:textSize="20sp"
             tools:layout_editor_absoluteX="33dp"
             tools:layout_editor_absoluteY="16dp"
             android:gravity="center|top"/>
 
+
     </LinearLayout>
+
+
+
+
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.untitledhorton.archive;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,13 +9,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnClickListener;
+import com.orhanobut.dialogplus.ViewHolder;
 import com.untitledhorton.archive.Fragment.ClassFragment;
+import com.untitledhorton.archive.Fragment.MonthLogFragment;
 import com.untitledhorton.archive.Fragment.ProfileFragment;
 import com.untitledhorton.archive.Fragment.CalendarFragment;
 import com.untitledhorton.archive.Fragment.NotesFragment;
@@ -37,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private ViewAnimator viewAnimator;
     private LinearLayout linearLayout;
     private NotesFragment notesFrag;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +78,12 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem1);
         SlideMenuItem menuItem2 = new SlideMenuItem("two", R.drawable.calendar_icon);
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem("three", R.drawable.classroom_icon);
+        SlideMenuItem menuItem3 = new SlideMenuItem("three", R.drawable.monthlog_icon);
         list.add(menuItem3);
-        SlideMenuItem menuItem4 = new SlideMenuItem("four", R.drawable.profile_icon);
+        SlideMenuItem menuItem4 = new SlideMenuItem("four", R.drawable.classroom_icon);
         list.add(menuItem4);
+        SlideMenuItem menuItem5 = new SlideMenuItem("five", R.drawable.profile_icon);
+        list.add(menuItem5);
     }
 
     private void setActionBar() {
@@ -139,7 +149,31 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             return true;
         }
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.menu_item_add:
+                DialogPlus removeDialog = DialogPlus.newDialog(this)
+                        .setHeader(R.layout.confirmation_header)
+                        .setExpanded(true, 450)
+                        .setContentHolder(new ViewHolder(R.layout.confirmation_dialog))
+                        .setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(DialogPlus dialog, View view) {
+                                switch(view.getId()){
+                                    case R.id.btnYes:
+                                        FirebaseAuth.getInstance().signOut();
+
+                                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                        startActivity(intent);
+                                        dialog.dismiss();
+                                        break;
+                                    case R.id.btnNo:
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        })
+                        .setGravity(Gravity.CENTER)
+                        .create();
+                removeDialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -176,10 +210,14 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, calFrag).commit();
                 break;
             case "three":
+                MonthLogFragment monthLogFragment = MonthLogFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, monthLogFragment).commit();
+                break;
+            case "four":
                 ClassFragment classFrag = ClassFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, classFrag).commit();
                 break;
-            case "four":
+            case "five":
                 ProfileFragment profileFrag = ProfileFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, profileFrag).commit();
                 break;
