@@ -4,10 +4,8 @@
     <modules>
       <module fileurl="file://C:\Users\Greg\Desktop\arcy\ArcHive-v3.iml" filepath="C:\Users\Greg\Desktop\arcy\ArcHive-v3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Greg\Desktop\arcy\app\app.iml" filepath="C:\Users\Greg\Desktop\arcy\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcy.iml" filepath="$PROJECT_DIR$/arcy.iml" />
       <module fileurl="file://$PROJECT_DIR$/side-menu/side-menu.iml" filepath="$PROJECT_DIR$/side-menu/side-menu.iml" />
-      <module fileurl="file://C:\Users\Greg\Desktop\arcy\side-menu\side-menu.iml" filepath="C:\Users\Greg\Desktop\arcy\side-menu\side-menu.iml" />
     </modules>
   </component>
 </project>
