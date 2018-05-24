@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.untitledhorton.archive.MainActivity;
 import com.untitledhorton.archive.Model.Note;
 
 import java.text.ParseException;
@@ -111,14 +113,20 @@ public class FirebaseOperation implements FirebaseCommand {
             public void onDataChange(DataSnapshot snapshot) {
                 Note note;
 
+                int noteCtr = 0;
+                Calendar calendar = Calendar.getInstance();
+
                 for (DataSnapshot objSnapshot: snapshot.getChildren()) {
                     Object key = objSnapshot.getKey();
 
                     NOTES_TABLE.child(key.toString());
                     note = objSnapshot.getValue(Note.class);
                     note.setId(key.toString());
+                    ++noteCtr;
 
                     String eventDate =  note.getMonth()+"/"+note.getDay()+"/"+note.getYear();
+                    //set when to show notif
+                    calendar.set(Integer.parseInt(note.getYear()), Integer.parseInt(note.getMonth()), Integer.parseInt(note.getDay()), 6, 00, 0);
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -144,6 +152,13 @@ public class FirebaseOperation implements FirebaseCommand {
                         System.out.println("Exception "+e);
                     }
                 }
+
+                if(noteCtr == 0){
+                    MainActivity.notification(calendar, "You have no upcoming notes today!");
+                }else{
+                    MainActivity.notification(calendar, "You have " + noteCtr + " notes today!");
+                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {

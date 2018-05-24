@@ -1,5 +1,8 @@
 package com.untitledhorton.archive;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -25,8 +28,10 @@ import com.untitledhorton.archive.Fragment.MonthLogFragment;
 import com.untitledhorton.archive.Fragment.ProfileFragment;
 import com.untitledhorton.archive.Fragment.CalendarFragment;
 import com.untitledhorton.archive.Fragment.NotesFragment;
+import com.untitledhorton.archive.Utility.NotificationService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.codetail.animation.SupportAnimator;
@@ -45,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private LinearLayout linearLayout;
     private NotesFragment notesFrag;
     private FirebaseAuth mAuth;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = getApplicationContext();
         notesFrag = NotesFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, notesFrag)
@@ -245,6 +252,15 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     public void addViewToContainer(View view) {
         linearLayout.addView(view);
+    }
+
+    public static void notification(Calendar calendar, String message) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+
+        Intent intent = new Intent(context.getApplicationContext(), NotificationService.class);
+        intent.putExtra("message", message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
 }

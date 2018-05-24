@@ -30,6 +30,7 @@ import com.orhanobut.dialogplus.OnClickListener;
 import com.orhanobut.dialogplus.ViewHolder;
 import com.untitledhorton.archive.AddActivity;
 import com.untitledhorton.archive.EditActivity;
+import com.untitledhorton.archive.MainActivity;
 import com.untitledhorton.archive.Model.Note;
 import com.untitledhorton.archive.NoteDetailActivity;
 import com.untitledhorton.archive.R;
@@ -147,7 +148,7 @@ public class NotesFragment extends Fragment implements ScreenShotable, FirebaseC
                 Note item = notes.get(position);
                 switch (index) {
                     case 0:
-                        Calendar cal = Calendar.getInstance();
+                        final Calendar cal = Calendar.getInstance();
                         final String moveKey = item.getId();
 
                         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
