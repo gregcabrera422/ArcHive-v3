@@ -28,6 +28,7 @@ import com.untitledhorton.archive.Fragment.MonthLogFragment;
 import com.untitledhorton.archive.Fragment.ProfileFragment;
 import com.untitledhorton.archive.Fragment.CalendarFragment;
 import com.untitledhorton.archive.Fragment.NotesFragment;
+import com.untitledhorton.archive.Utility.FirebaseOperation;
 import com.untitledhorton.archive.Utility.NotificationService;
 
 import java.util.ArrayList;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, notesFrag)
                 .commit();
+
+        FirebaseOperation.retrieveNumberOfNotes();
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);

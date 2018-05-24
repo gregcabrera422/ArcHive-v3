@@ -125,7 +125,7 @@ public class FirebaseOperation implements FirebaseCommand {
                     ++noteCtr;
 
                     String eventDate =  note.getMonth()+"/"+note.getDay()+"/"+note.getYear();
-                    //set when to show notif
+
                     calendar.set(Integer.parseInt(note.getYear()), Integer.parseInt(note.getMonth()), Integer.parseInt(note.getDay()), 6, 00, 0);
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -151,12 +151,6 @@ public class FirebaseOperation implements FirebaseCommand {
                     {
                         System.out.println("Exception "+e);
                     }
-                }
-
-                if(noteCtr == 0){
-                    MainActivity.notification(calendar, "You have no upcoming notes today!");
-                }else{
-                    MainActivity.notification(calendar, "You have " + noteCtr + " notes today!");
                 }
 
             }
@@ -191,6 +185,64 @@ public class FirebaseOperation implements FirebaseCommand {
                 }
                 pb.setVisibility(View.INVISIBLE);
                 tvEmpty.setText("You Have No Notes This Month");
+            }
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public static void retrieveNumberOfNotes(){
+        NOTES_TABLE.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Note note;
+
+                int noteCtr = 0;
+                Calendar calendar = Calendar.getInstance();
+                String month = "";
+                String day = "";
+                for (DataSnapshot objSnapshot: snapshot.getChildren()) {
+                    Object key = objSnapshot.getKey();
+
+                    NOTES_TABLE.child(key.toString());
+                    note = objSnapshot.getValue(Note.class);
+                    note.setId(key.toString());
+
+                    if(calendar.get(Calendar.DAY_OF_MONTH)<10){
+                        day = "0"+(calendar.get(Calendar.DAY_OF_MONTH)+1);
+                    }else{
+                        day = Integer.toString(calendar.get(Calendar.DAY_OF_MONTH));
+                    }
+
+                    if(calendar.get(Calendar.MONTH)<10){
+                        month = "0"+(calendar.get(Calendar.MONTH)+1);
+
+                    }else{
+                        month = Integer.toString(calendar.get(Calendar.MONTH));
+                    }
+
+                    if(note.getDay().equals(day)&&note.getMonth().equals(month)){
+                        System.out.println("this is true");
+                        ++noteCtr;
+                        System.out.println("HELLO HELLO");
+                    }
+
+                }
+
+                calendar.set(Calendar.HOUR_OF_DAY, 6);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+
+                if(noteCtr == 0){
+                    System.out.println("HERE");
+                    MainActivity.notification(calendar, "You have no upcoming notes today!");
+                }else{
+                    System.out.println("THERE ctr: " + noteCtr);
+                    MainActivity.notification(calendar, "You have " + noteCtr + " notes today!");
+                }
+
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
